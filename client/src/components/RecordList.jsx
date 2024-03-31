@@ -60,7 +60,6 @@ export default function RecordList() {
     const res = await fetch(`http://localhost:5050/record/${id}`, {
       method: 'DELETE',
     })
-    console.log(res);
 
     const newRecords = records.filter((el) => el._id !== id)
     setRecords(newRecords)
