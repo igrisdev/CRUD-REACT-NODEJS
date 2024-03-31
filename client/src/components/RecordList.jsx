@@ -1,42 +1,46 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const Record = (props) => (
-  <tr className='border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
-    <td className='px-4 py-2 text-left align-middle [&amp;:has([role:checkbox])]:pr-0'>
-      {props.record.name}
-    </td>
-    <td className='px-4 py-2 text-left align-middle [&amp;:has([role:checkbox])]:pr-0'>
-      {props.record.position}
-    </td>
-    <td className='px-4 py-2 text-left align-middle [&amp;:has([role:checkbox])]:pr-0'>
-      {props.record.level}
-    </td>
-    <td className='px-4 py-2 text-left align-middle [&amp;:has([role:checkbox])]:pr-0'>
-      <div className='flex gap-2'>
-        <Link
-          className='inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3'
-          to={`/edit/${props.record_id}`}
-        >
-          Edit
-        </Link>
-        <button
-          className='inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3'
-          color='red'
-          type='button'
-          onClick={() => {
-            props.deleteRecord(props.record._id)
-          }}
-        >
-          Delete
-        </button>
-      </div>
-    </td>
-  </tr>
-)
+const Record = (props) => {
+  return (
+    <tr className='border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'>
+      <td className='px-4 py-2 text-left align-middle [&amp;:has([role:checkbox])]:pr-0'>
+        {props.record.name}
+      </td>
+      <td className='px-4 py-2 text-left align-middle [&amp;:has([role:checkbox])]:pr-0'>
+        {props.record.position}
+      </td>
+      <td className='px-4 py-2 text-left align-middle [&amp;:has([role:checkbox])]:pr-0'>
+        {props.record.level}
+      </td>
+      <td className='px-4 py-2 text-left align-middle [&amp;:has([role:checkbox])]:pr-0'>
+        <div className='flex gap-2'>
+          <Link
+            className='inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3'
+            to={`/edit/${props.record._id}`}
+          >
+            Edit
+          </Link>
+          <button
+            className='inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3'
+            color='red'
+            type='button'
+            onClick={() => {
+              props.deleteRecord(props.record._id)
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </td>
+    </tr>
+  )
+}
 
 export default function RecordList() {
   const [records, setRecords] = useState([])
+  const [search, setSearch] = useState('')
+  const [filtered, setFiltered] = useState([])
   // This method fetches the records from the database.
   useEffect(() => {
     async function getRecords() {
@@ -50,11 +54,29 @@ export default function RecordList() {
 
       const records = await response.json()
       setRecords(records)
+      setFiltered(records)
     }
 
     getRecords()
     return
   }, [records.length])
+
+  useEffect(() => {
+    const filtered = records.filter((record) => {
+      return record.name.toLowerCase().includes(search.toLowerCase())
+    })
+
+    if (search === '') {
+      setFiltered(records)
+    }
+
+    setFiltered(filtered)
+  }, [search])
+
+  function searchEmployees(event) {
+    setSearch(event.target.value)
+  }
+
   // This method will delete a record
   async function deleteRecord(id) {
     const res = await fetch(`http://localhost:5050/record/${id}`, {
@@ -64,9 +86,10 @@ export default function RecordList() {
     const newRecords = records.filter((el) => el._id !== id)
     setRecords(newRecords)
   }
+
   // This method will map out the records on the table
   function recordList() {
-    return records.map((record) => {
+    return filtered.map((record) => {
       return (
         <Record
           record={record}
@@ -79,8 +102,23 @@ export default function RecordList() {
   // This following section will display the table with the records of individuals.
   return (
     <>
-      <h3 className='text-lg font-semibold p-4 text-left'>Employee Records</h3>
-      <div className='border rounded-lg overflow-hidden'>
+      <section className='flex flex-col mb-4 sm:flex-row sm:mb-0 sm:items-center justify-between'>
+        <h3 className='text-lg font-semibold py-4 sm:px-4 text-left w-max flex-1'>
+          Employee Records
+        </h3>
+        <div className='flex-1'>
+          <input
+            type='search'
+            name='search'
+            id='search'
+            defaultValue={search}
+            placeholder='Search Employees by Name'
+            className='w-full whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3'
+            onChange={searchEmployees}
+          />
+        </div>
+      </section>
+      <section className='border rounded-lg overflow-hidden'>
         <div className='relative w-full overflow-auto'>
           <table className='w-full caption-bottom overflow-auto'>
             <thead className='[&amp;_tr]:border-b'>
@@ -104,7 +142,7 @@ export default function RecordList() {
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
     </>
   )
 }

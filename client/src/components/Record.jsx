@@ -15,7 +15,7 @@ export default function Record() {
       const id = params.id?.toString() || undefined
       if (!id) return
       setIsNew(false)
-      const response = await fetch(`http://localhost:5050/${id}`)
+      const response = await fetch(`http://localhost:5050/record/${id}`)
       if (!response.ok) {
         const message = `An error has occurred: ${response.statusText}`
         window.alert(message)
@@ -55,7 +55,7 @@ export default function Record() {
       } else {
         // if we are updating a record we will PATCH to /record/:id
         response = await fetch(`http://localhost:5050/record/${person._id}`, {
-          method: 'PATCH',
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -76,14 +76,14 @@ export default function Record() {
   // This following section will display the form that takes input from the user to update the data.
   return (
     <>
-      <h3 className='text-lg font-semibold p-4'>
+      <h3 className='text-lg font-semibold py-4 sm:px-4 text-left'>
         Create/Update Employed Record
       </h3>
       <form
         onSubmit={onSubmit}
         className='border rounded-lg overflow-hidden p-4'
       >
-        <div className='grid grid-cols-1 gap-x-8 gap-y-10 border-b border-slate-900/10 pb-12 md:grid-cols-2'>
+        <div className='grid grid-cols-1 gap-x-8 gap-y-10 border-b border-slate-900/10 pb-12 md:grid-cols-2 text-left'>
           <div>
             <h2 className='text-base font-semibold leading-7 text-slate-900'>
               Employee Info
