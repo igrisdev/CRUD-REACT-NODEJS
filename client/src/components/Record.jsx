@@ -31,20 +31,22 @@ export default function Record() {
     }
     fetchData()
   }, [params.id, navigate])
-  // This method will update the state properties.
+
+  // este método actualizara el registro
   function updateForm(value) {
     return setForm((prev) => {
       return { ...prev, ...value }
     })
   }
-  // This method will handle the submission
+
+  // este método maneja el envió del formulario con el registro
   async function onSubmit(e) {
     e.preventDefault()
     const person = { ...form }
     try {
       let response
       if (isNew) {
-        // if we are adding a new record we will POST to /record
+        // si estas añadiendo un nuevo registro, enviaremos un POST a /record
         response = await fetch('http://localhost:5050/record', {
           method: 'POST',
           headers: {
@@ -53,7 +55,7 @@ export default function Record() {
           body: JSON.stringify(person),
         })
       } else {
-        // if we are updating a record we will PATCH to /record/:id
+        // si estas actualizando un registro, enviaremos un PUT a /record/:id
         response = await fetch(`http://localhost:5050/record/${person._id}`, {
           method: 'PUT',
           headers: {
@@ -73,7 +75,7 @@ export default function Record() {
     }
   }
 
-  // This following section will display the form that takes input from the user to update the data.
+  // este código pinta el formulario
   return (
     <>
       <h3 className='text-lg font-semibold py-4 sm:px-4 text-left'>
