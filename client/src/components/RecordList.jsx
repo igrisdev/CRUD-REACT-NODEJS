@@ -79,7 +79,7 @@ export default function RecordList() {
     setSearch(event.target.value)
   }
 
-  // This method will delete a record
+  // este método elimina un registro de la base de datos.
   async function deleteRecord(id) {
     const res = await fetch(`http://localhost:5050/record/${id}`, {
       method: 'DELETE',
@@ -89,7 +89,7 @@ export default function RecordList() {
     setRecords(newRecords)
   }
 
-  // This method will map out the records on the table
+  // este método listara los registros
   function recordList() {
     return filtered.map((record) => {
       return (
@@ -101,7 +101,8 @@ export default function RecordList() {
       )
     })
   }
-  // This following section will display the table with the records of individuals.
+
+  // esta sección mostrara los registros en una tabla
   return (
     <>
       <section className='flex flex-col mb-4 sm:flex-row sm:mb-0 sm:items-center justify-between'>
