@@ -63,6 +63,7 @@ export default function RecordList() {
     return
   }, [records.length])
 
+  // este método obtiene los registros que coincidan con la búsqueda por nombre
   useEffect(() => {
     const filtered = records.filter((record) => {
       return record.name.toLowerCase().includes(search.toLowerCase())
