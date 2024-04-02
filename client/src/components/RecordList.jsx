@@ -43,7 +43,7 @@ export default function RecordList() {
   const [records, setRecords] = useState([])
   const [search, setSearch] = useState('')
   const [filtered, setFiltered] = useState([])
-  // This method fetches the records from the database.
+  // este hook se ejecuta cuando el componente se monta y recupera los registros
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5050/record/`)
@@ -125,8 +125,10 @@ export default function RecordList() {
         <div className='relative w-full overflow-auto'>
           <table className='w-full caption-bottom overflow-auto'>
             <thead className='[&amp;_tr]:border-b'>
-              <tr className='border-b transition-colors hover:bg-muted/50
-              data-[state=selected]:bg-muted'>
+              <tr
+                className='border-b transition-colors hover:bg-muted/50
+              data-[state=selected]:bg-muted'
+              >
                 <th className='h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role:checkbox])]:pr-0'>
                   Name
                 </th>
